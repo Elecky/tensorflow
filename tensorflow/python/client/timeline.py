@@ -436,6 +436,8 @@ class Timeline(object):
     else:
       _, op, inputs = self._parse_op_label(nodestats.timeline_label)
     args = {'name': node_name, 'op': op}
+    if (op.startswith('MEMCPY')):
+      args['MEMCPY_Property'] = nodestats.timeline_label
     for i, iname in enumerate(inputs):
       args['input%d' % i] = iname
     self._chrome_trace.emit_region(start, duration, pid, tid, 'Op', op, args)

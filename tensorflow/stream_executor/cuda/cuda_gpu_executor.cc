@@ -852,7 +852,11 @@ CudaContext* CUDAExecutor::cuda_context() { return context_; }
 // For anything more complicated/prod-focused than this, you'll likely want to
 // turn to gsys' topology modeling.
 static int TryToReadNumaNode(const string &pci_bus_id, int device_ordinal) {
-#if defined(__APPLE__)
+
+#ifdef __aarch64__
+  LOG(INFO) << "ARM64 does not support NUMA - returning NUMA node zero";
+  return 0;
+#elif defined(__APPLE__)
   LOG(INFO) << "OS X does not support NUMA - returning NUMA node zero";
   return 0;
 #elif defined(PLATFORM_WINDOWS)

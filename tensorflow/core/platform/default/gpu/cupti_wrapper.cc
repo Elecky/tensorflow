@@ -62,6 +62,26 @@ LIBCUPTI_WRAP(cuptiEnableCallback);
 LIBCUPTI_WRAP(cuptiEnableDomain);
 LIBCUPTI_WRAP(cuptiSubscribe);
 LIBCUPTI_WRAP(cuptiUnsubscribe);
+// added events and metric wraps, by Hujian
+LIBCUPTI_WRAP(cuptiMetricGetIdFromName);
+LIBCUPTI_WRAP(cuptiMetricGetNumEvents);
+LIBCUPTI_WRAP(cuptiMetricEnumEvents);
+LIBCUPTI_WRAP(cuptiMetricCreateEventGroupSets);
+LIBCUPTI_WRAP(cuptiSetEventCollectionMode);
+LIBCUPTI_WRAP(cuptiEventGroupSetAttribute);
+LIBCUPTI_WRAP(cuptiEventGroupEnable);
+LIBCUPTI_WRAP(cuptiEventGroupGetAttribute);
+LIBCUPTI_WRAP(cuptiDeviceGetEventDomainAttribute);
+LIBCUPTI_WRAP(cuptiEventGroupReadEvent);
+LIBCUPTI_WRAP(cuptiEventGroupResetAllEvents);
+LIBCUPTI_WRAP(cuptiMetricGetValue);
+LIBCUPTI_WRAP(cuptiGetDeviceId);
+LIBCUPTI_WRAP(cuptiEventGroupDisable);
+LIBCUPTI_WRAP(cuptiGetContextId);
+LIBCUPTI_WRAP(cuptiEnableKernelReplayMode);
+LIBCUPTI_WRAP(cuptiMetricGetAttribute);
+LIBCUPTI_WRAP(cuptiDisableKernelReplayMode);
+LIBCUPTI_WRAP(cuptiEventGroupSetsDestroy);
 
 }  // namespace dynload
 
@@ -98,6 +118,10 @@ CUptiResult CuptiWrapper::ActivityRegisterCallbacks(
                                                  func_buffer_completed);
 }
 
+CUptiResult CuptiWrapper::GetDeviceId(CUcontext context, uint32_t* deviceId) {
+  return dynload::cuptiGetDeviceId(context, deviceId);
+}
+
 CUptiResult CuptiWrapper::GetTimestamp(uint64_t* timestamp) {
   return dynload::cuptiGetTimestamp(timestamp);
 }
@@ -123,6 +147,116 @@ CUptiResult CuptiWrapper::Subscribe(CUpti_SubscriberHandle* subscriber,
 
 CUptiResult CuptiWrapper::Unsubscribe(CUpti_SubscriberHandle subscriber) {
   return dynload::cuptiUnsubscribe(subscriber);
+}
+
+// added events and metric apis, by Hujian
+CUptiResult CuptiWrapper::cuptiMetricGetIdFromName(CUdevice device,
+                                              const char *metricName,
+                                              CUpti_MetricID *metric) {
+  return dynload::cuptiMetricGetIdFromName(device, metricName, metric);
+}
+
+CUptiResult CuptiWrapper::cuptiMetricGetNumEvents(CUpti_MetricID metric, uint32_t *numEvents) {
+  return dynload::cuptiMetricGetNumEvents(metric, numEvents);
+}
+
+CUptiResult CuptiWrapper::cuptiMetricEnumEvents(CUpti_MetricID metric,
+                                  size_t *eventIdArraySizeBytes,
+                                  CUpti_EventID *eventIdArray) {
+  return dynload::cuptiMetricEnumEvents(metric, eventIdArraySizeBytes, eventIdArray);
+}
+
+CUptiResult CuptiWrapper::cuptiMetricCreateEventGroupSets(CUcontext context,
+                                            size_t metricIdArraySizeBytes,
+                                            CUpti_MetricID *metricIdArray,
+                                            CUpti_EventGroupSets **eventGroupPasses) {
+  return dynload::cuptiMetricCreateEventGroupSets(context, metricIdArraySizeBytes,
+                                                  metricIdArray, eventGroupPasses);
+}
+
+CUptiResult CuptiWrapper::cuptiSetEventCollectionMode(CUcontext context,
+                                        CUpti_EventCollectionMode mode) {
+  return dynload::cuptiSetEventCollectionMode(context, mode);
+}
+
+CUptiResult CuptiWrapper::cuptiEventGroupSetAttribute(CUpti_EventGroup eventGroup,
+                                          CUpti_EventGroupAttribute attrib,
+                                          size_t valueSize,
+                                          void *value) {
+  return dynload::cuptiEventGroupSetAttribute(eventGroup, attrib, valueSize, value);
+}
+
+CUptiResult CuptiWrapper::cuptiEventGroupEnable(CUpti_EventGroup eventGroup) {
+  return dynload::cuptiEventGroupEnable(eventGroup);
+}
+
+CUptiResult CuptiWrapper::cuptiEventGroupGetAttribute(CUpti_EventGroup eventGroup,
+                                        CUpti_EventGroupAttribute attrib,
+                                        size_t *valueSize,
+                                        void *value) {
+  return dynload::cuptiEventGroupGetAttribute(eventGroup, attrib, valueSize, value);
+}
+
+CUptiResult CuptiWrapper::cuptiDeviceGetEventDomainAttribute(CUdevice device,
+                                                 CUpti_EventDomainID eventDomain,
+                                                 CUpti_EventDomainAttribute attrib,
+                                                 size_t *valueSize,
+                                                 void *value) {
+  return dynload::cuptiDeviceGetEventDomainAttribute(device, eventDomain, attrib, 
+                                                     valueSize, value);
+}
+
+CUptiResult CuptiWrapper::cuptiEventGroupReadEvent(CUpti_EventGroup eventGroup,
+                                       CUpti_ReadEventFlags flags,
+                                       CUpti_EventID event,
+                                       size_t *eventValueBufferSizeBytes,
+                                       uint64_t *eventValueBuffer) {
+  return dynload::cuptiEventGroupReadEvent(eventGroup, flags, event,
+                                           eventValueBufferSizeBytes, eventValueBuffer);
+}
+
+CUptiResult CuptiWrapper::cuptiEventGroupResetAllEvents(CUpti_EventGroup eventGroup) {
+  return dynload::cuptiEventGroupResetAllEvents(eventGroup);
+}
+
+CUptiResult CuptiWrapper::cuptiMetricGetValue(CUdevice device,
+                                  CUpti_MetricID metric,
+                                  size_t eventIdArraySizeBytes,
+                                  CUpti_EventID *eventIdArray,
+                                  size_t eventValueArraySizeBytes,
+                                  uint64_t *eventValueArray,
+                                  uint64_t timeDuration,
+                                  CUpti_MetricValue *metricValue) {
+  return dynload::cuptiMetricGetValue(device, metric, eventIdArraySizeBytes, eventIdArray,
+                                      eventValueArraySizeBytes, eventValueArray, timeDuration,
+                                      metricValue);
+}
+
+CUptiResult CuptiWrapper::cuptiEventGroupDisable(CUpti_EventGroup eventGroup) {
+  return dynload::cuptiEventGroupDisable(eventGroup);
+}
+
+CUptiResult CuptiWrapper::cuptiGetContextId(CUcontext context, uint32_t *contextId){
+  return dynload::cuptiGetContextId(context, contextId);
+}
+
+CUptiResult CuptiWrapper::cuptiEnableKernelReplayMode(CUcontext context) {
+  return dynload::cuptiEnableKernelReplayMode(context);
+}
+
+CUptiResult CuptiWrapper::cuptiMetricGetAttribute(CUpti_MetricID metric,
+                                    CUpti_MetricAttribute attrib,
+                                    size_t *valueSize,
+                                    void *value) {
+  return dynload::cuptiMetricGetAttribute(metric, attrib, valueSize, value);
+}
+
+CUptiResult CuptiWrapper::cuptiDisableKernelReplayMode(CUcontext context) {
+  return dynload::cuptiDisableKernelReplayMode(context);
+}
+
+CUptiResult CuptiWrapper::cuptiEventGroupSetsDestroy(CUpti_EventGroupSets *eventGroupSets) {
+  return dynload::cuptiEventGroupSetsDestroy(eventGroupSets);
 }
 
 }  // namespace profiler

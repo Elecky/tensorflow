@@ -732,6 +732,7 @@ def _cuda_copts():
       "@local_config_cuda//cuda:using_nvcc": ([
           "-nvcc_options=relaxed-constexpr",
           "-nvcc_options=ftz=true",
+          "-nvcc_options=generate-line-info",
       ]),
       "@local_config_cuda//cuda:using_clang": ([
           "-fcuda-flush-denormals-to-zero",

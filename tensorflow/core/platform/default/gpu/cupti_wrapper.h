@@ -54,6 +54,8 @@ class CuptiWrapper {
 
   CUptiResult GetDeviceId(CUcontext context, uint32_t* deviceId);
 
+  CUptiResult cuptiGetContextId(CUcontext context, uint32_t *contextId);
+
   CUptiResult GetTimestamp(uint64_t* timestamp);
 
   // CUPTI callback API
@@ -68,6 +70,73 @@ class CuptiWrapper {
                         CUpti_CallbackFunc callback, void* userdata);
 
   CUptiResult Unsubscribe(CUpti_SubscriberHandle subscriber);
+
+  // CUPTI event API
+  CUptiResult cuptiSetEventCollectionMode(CUcontext context,
+                                          CUpti_EventCollectionMode mode);
+
+  CUptiResult cuptiEventGroupSetAttribute(CUpti_EventGroup eventGroup,
+                                          CUpti_EventGroupAttribute attrib,
+                                          size_t valueSize,
+                                          void *value);
+
+  CUptiResult cuptiEventGroupEnable(CUpti_EventGroup eventGroup);
+
+  CUptiResult cuptiEventGroupGetAttribute(CUpti_EventGroup eventGroup,
+                                          CUpti_EventGroupAttribute attrib,
+                                          size_t *valueSize,
+                                          void *value);
+
+  CUptiResult cuptiDeviceGetEventDomainAttribute(CUdevice device,
+                                                 CUpti_EventDomainID eventDomain,
+                                                 CUpti_EventDomainAttribute attrib,
+                                                 size_t *valueSize,
+                                                 void *value);
+
+  CUptiResult cuptiEventGroupReadEvent(CUpti_EventGroup eventGroup,
+                                       CUpti_ReadEventFlags flags,
+                                       CUpti_EventID event,
+                                       size_t *eventValueBufferSizeBytes,
+                                       uint64_t *eventValueBuffer);
+
+  CUptiResult cuptiEventGroupResetAllEvents(CUpti_EventGroup eventGroup);
+
+  CUptiResult cuptiEventGroupDisable(CUpti_EventGroup eventGroup);
+
+  CUptiResult cuptiEnableKernelReplayMode(CUcontext context);
+
+  CUptiResult cuptiDisableKernelReplayMode(CUcontext context);
+
+  CUptiResult cuptiEventGroupSetsDestroy(CUpti_EventGroupSets *eventGroupSets);
+
+  // CUPTI metric API
+  CUptiResult cuptiMetricGetIdFromName(CUdevice device,
+                                              const char *metricName,
+                                              CUpti_MetricID *metric);
+
+  CUptiResult cuptiMetricGetNumEvents(CUpti_MetricID metric, uint32_t *numEvents);
+
+  CUptiResult cuptiMetricEnumEvents(CUpti_MetricID metric,
+                                    size_t *eventIdArraySizeBytes,
+                                    CUpti_EventID *eventIdArray);
+
+  CUptiResult cuptiMetricCreateEventGroupSets(CUcontext context,
+                                              size_t metricIdArraySizeBytes,
+                                              CUpti_MetricID *metricIdArray,
+                                              CUpti_EventGroupSets **eventGroupPasses);
+
+  CUptiResult cuptiMetricGetValue(CUdevice device,
+                                  CUpti_MetricID metric,
+                                  size_t eventIdArraySizeBytes,
+                                  CUpti_EventID *eventIdArray,
+                                  size_t eventValueArraySizeBytes,
+                                  uint64_t *eventValueArray,
+                                  uint64_t timeDuration,
+                                  CUpti_MetricValue *metricValue);
+  CUptiResult cuptiMetricGetAttribute(CUpti_MetricID metric,
+                                      CUpti_MetricAttribute attrib,
+                                      size_t *valueSize,
+                                      void *value);
 };
 
 }  // namespace profiler
